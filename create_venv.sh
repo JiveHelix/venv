@@ -11,6 +11,16 @@ else
     THIS_DIRECTORY="$(cd "$(dirname "${BASH_SOURCE[0]}")" > /dev/null && pwd)"
 fi
 
+if ! [ -v PYTHON ]
+then
+    PYTHON=python3
+fi
+
+if ! [ -v PIP ]
+then
+    PIP=pip3
+fi
+
 if [[ $# -ne 2 ]]
 then
     echo "Usage: $(basename $0) <venv-directory> <requirements-file>"
@@ -23,11 +33,13 @@ REQUIREMENTS="$2"
 # Create the venv directory if it doesn't exist
 [[ ! -d "${VENV_DIRECTORY}" ]] && mkdir -p "${VENV_DIRECTORY}"
 
-python3 -m venv "${VENV_DIRECTORY}"
+echo "Using ${PYTHON} and ${PIP}"
+
+eval "${PYTHON} -m venv "${VENV_DIRECTORY}""
 
 source "${VENV_DIRECTORY}/bin/activate"
 
-pip3 install --upgrade pip
+eval "${PIP} install --upgrade pip"
 
 # Install the requirements for wxPython
-pip3 install -r "${REQUIREMENTS}"
+eval "${PIP} install -r "${REQUIREMENTS}""
